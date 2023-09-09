@@ -1,0 +1,57 @@
+From 9860024d8c4da9d7afffa9974c052e6ef0bad4eb Mon Sep 17 00:00:00 2001
+From: Sergey Moryakov <sergey@nqnet.org>
+Date: Sat, 19 Aug 2023 01:57:33 +0300
+Subject: [PATCH 1/5] WR: Add NetSOM platform to configs
+
+---
+ arch/arm/dts/Makefile         |  1 +
+ arch/arm/mach-imx/mx6/Kconfig | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
+index b3e2a9c9d7..b96ebbc7ff 100644
+--- a/arch/arm/dts/Makefile
++++ b/arch/arm/dts/Makefile
+@@ -845,6 +845,7 @@ dtb-$(CONFIG_MX6ULL) += \
+ 	imx6ull-phytec-segin-ff-rdk-emmc.dtb \
+ 	imx6ull-dart-6ul.dtb \
+ 	imx6ull-somlabs-visionsom.dtb \
++	imx6ull-wr-netsom.dtb \
+ 	imx6ulz-14x14-evk.dtb
+ 
+ dtb-$(CONFIG_ARCH_MX6) += \
+diff --git a/arch/arm/mach-imx/mx6/Kconfig b/arch/arm/mach-imx/mx6/Kconfig
+index 98df4d4e42..f12dbe5c25 100644
+--- a/arch/arm/mach-imx/mx6/Kconfig
++++ b/arch/arm/mach-imx/mx6/Kconfig
+@@ -440,6 +440,19 @@ config TARGET_MX6ULL_14X14_EVK
+ 	select DM_THERMAL
+ 	imply CMD_DM
+ 
++config TARGET_MX6ULL_WR_NETSOM
++	bool "Support imx6ull WirelessRoad NetSOM"
++	depends on MX6ULL
++	select BOARD_LATE_INIT
++	select DM
++	select DM_ETH
++	select DM_MMC
++	select DM_SPI
++	select DM_SPI_FLASH
++	select DM_GPIO
++	select DM_SERIAL
++	select DM_THERMAL
++
+ config TARGET_MYS_6ULX
+ 	bool "MYiR MYS-6ULX"
+ 	depends on MX6ULL
+@@ -674,6 +687,7 @@ source "board/freescale/mx6sxsabresd/Kconfig"
+ source "board/freescale/mx6sxsabreauto/Kconfig"
+ source "board/freescale/mx6ul_14x14_evk/Kconfig"
+ source "board/freescale/mx6ullevk/Kconfig"
++source "board/wirelessroad/mx6ull_wr_netsom/Kconfig"
+ source "board/grinn/liteboard/Kconfig"
+ source "board/phytec/pcm058/Kconfig"
+ source "board/phytec/pcl063/Kconfig"
+-- 
+2.41.0
+

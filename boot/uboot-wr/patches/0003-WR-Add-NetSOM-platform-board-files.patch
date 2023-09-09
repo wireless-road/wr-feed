@@ -1,0 +1,347 @@
+From e9b67d1ee526646b0ca60fe4c90de45073506e8a Mon Sep 17 00:00:00 2001
+From: Sergey Moryakov <sergey@nqnet.org>
+Date: Sat, 19 Aug 2023 01:59:03 +0300
+Subject: [PATCH 3/5] WR: Add NetSOM platform board files
+
+---
+ board/wirelessroad/mx6ull_wr_netsom/Kconfig   |  15 ++
+ .../wirelessroad/mx6ull_wr_netsom/MAINTAINERS |   7 +
+ board/wirelessroad/mx6ull_wr_netsom/Makefile  |   4 +
+ .../mx6ull_wr_netsom/imximage.cfg             | 109 ++++++++++++
+ .../mx6ull_wr_netsom/mx6ull_wr_netsom.c       | 160 ++++++++++++++++++
+ 5 files changed, 295 insertions(+)
+ create mode 100644 board/wirelessroad/mx6ull_wr_netsom/Kconfig
+ create mode 100644 board/wirelessroad/mx6ull_wr_netsom/MAINTAINERS
+ create mode 100644 board/wirelessroad/mx6ull_wr_netsom/Makefile
+ create mode 100644 board/wirelessroad/mx6ull_wr_netsom/imximage.cfg
+ create mode 100644 board/wirelessroad/mx6ull_wr_netsom/mx6ull_wr_netsom.c
+
+diff --git a/board/wirelessroad/mx6ull_wr_netsom/Kconfig b/board/wirelessroad/mx6ull_wr_netsom/Kconfig
+new file mode 100644
+index 0000000000..1d64900f70
+--- /dev/null
++++ b/board/wirelessroad/mx6ull_wr_netsom/Kconfig
+@@ -0,0 +1,15 @@
++if TARGET_MX6ULL_WR_NETSOM
++
++config SYS_BOARD
++	default "mx6ull_wr_netsom"
++
++config SYS_VENDOR
++	default "wirelessroad"
++
++config SYS_CONFIG_NAME
++	default "mx6ull_wr_netsom"
++
++config IMX_CONFIG
++	default "board/wireslessroad/mx6ull_wr_netsom/imximage.cfg"
++
++endif
+diff --git a/board/wirelessroad/mx6ull_wr_netsom/MAINTAINERS b/board/wirelessroad/mx6ull_wr_netsom/MAINTAINERS
+new file mode 100644
+index 0000000000..295fa87246
+--- /dev/null
++++ b/board/wirelessroad/mx6ull_wr_netsom/MAINTAINERS
+@@ -0,0 +1,7 @@
++MX6ULLWRNETSOM BOARD
++M:	Sergey Moryakov <sergey@nqnet.org>
++S:	Maintained
++F:	arch/arm/dts/imx6ull-wr-netsom.dts
++F:	board/wirelessroad/mx6ull_wr_netsom/
++F:	include/configs/mx6ull_wr_netsom.h
++F:	configs/mx6ull_wr_netsom_defconfig
+diff --git a/board/wirelessroad/mx6ull_wr_netsom/Makefile b/board/wirelessroad/mx6ull_wr_netsom/Makefile
+new file mode 100644
+index 0000000000..a5b1d035f1
+--- /dev/null
++++ b/board/wirelessroad/mx6ull_wr_netsom/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0+
++# (C) Copyright 2016 Freescale Semiconductor, Inc.
++
++obj-y  := mx6ull_wr_netsom.o
+diff --git a/board/wirelessroad/mx6ull_wr_netsom/imximage.cfg b/board/wirelessroad/mx6ull_wr_netsom/imximage.cfg
+new file mode 100644
+index 0000000000..e670cef2a9
+--- /dev/null
++++ b/board/wirelessroad/mx6ull_wr_netsom/imximage.cfg
+@@ -0,0 +1,109 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Copyright (C) 2016 Freescale Semiconductor, Inc.
++ *
++ * Refer doc/imx/mkimage/imximage.txt for more details about how-to configure
++ * and create imximage boot image
++ *
++ * The syntax is taken as close as possible with the kwbimage
++ */
++
++#define __ASSEMBLY__
++#include <config.h>
++
++/* image version */
++
++IMAGE_VERSION 2
++
++/*
++ * Boot Device : one of
++ * spi/sd/nand/onenand, qspi/nor
++ */
++
++BOOT_FROM	spi
++
++#ifdef CONFIG_USE_IMXIMG_PLUGIN
++/*PLUGIN    plugin-binary-file    IRAM_FREE_START_ADDR*/
++PLUGIN	board/freescale/mx6ullevk/plugin.bin 0x00907000
++#else
++
++#ifdef CONFIG_IMX_HAB
++CSF CONFIG_CSF_SIZE
++#endif
++
++/*
++ * Device Configuration Data (DCD)
++ *
++ * Each entry must have the format:
++ * Addr-type           Address        Value
++ *
++ * where:
++ *	Addr-type register length (1,2 or 4 bytes)
++ *	Address	  absolute address of the register
++ *	value	  value to be stored in the register
++ */
++
++/* Enable all clocks */
++DATA 4 0x020c4068 0xffffffff 
++DATA 4 0x020c406c 0xffffffff
++DATA 4 0x020c4070 0xffffffff
++DATA 4 0x020c4074 0xffffffff
++DATA 4 0x020c4078 0xffffffff
++DATA 4 0x020c407c 0xffffffff
++DATA 4 0x020c4080 0xffffffff
++
++DATA 4 0x020E04B4 0x000C0000
++DATA 4 0x020E04AC 0x00000000
++DATA 4 0x020E027C 0x00000030
++DATA 4 0x020E0250 0x00000030
++DATA 4 0x020E024C 0x00000030
++DATA 4 0x020E0490 0x00000030
++DATA 4 0x020E0288 0x000C0030
++DATA 4 0x020E0270 0x00000000
++DATA 4 0x020E0260 0x00000030
++DATA 4 0x020E0264 0x00000030
++DATA 4 0x020E04A0 0x00000030
++DATA 4 0x020E0494 0x00020000
++DATA 4 0x020E0280 0x00000030
++DATA 4 0x020E0284 0x00000030
++DATA 4 0x020E04B0 0x00020000
++DATA 4 0x020E0498 0x00000030
++DATA 4 0x020E04A4 0x00000030
++DATA 4 0x020E0244 0x00000030
++DATA 4 0x020E0248 0x00000030
++DATA 4 0x021B001C 0x00008000
++DATA 4 0x021B0800 0xA1390003
++DATA 4 0x021B080C 0x00000004
++DATA 4 0x021B083C 0x41640158
++DATA 4 0x021B0848 0x40403237
++DATA 4 0x021B0850 0x40403C33
++DATA 4 0x021B081C 0x33333333
++DATA 4 0x021B0820 0x33333333
++DATA 4 0x021B082C 0xf3333333
++DATA 4 0x021B0830 0xf3333333
++DATA 4 0x021B08C0 0x00944009
++DATA 4 0x021B08b8 0x00000800
++DATA 4 0x021B0004 0x0002002D
++DATA 4 0x021B0008 0x1B333030
++DATA 4 0x021B000C 0x676B52F3
++DATA 4 0x021B0010 0xB66D0B63
++DATA 4 0x021B0014 0x01FF00DB
++DATA 4 0x021B0018 0x00201740
++DATA 4 0x021B001C 0x00008000
++DATA 4 0x021B002C 0x000026D2
++DATA 4 0x021B0030 0x006B1023
++DATA 4 0x021B0040 0x0000004F
++DATA 4 0x021B0000 0x83180000
++DATA 4 0x021B0890 0x00400000
++DATA 4 0x021B001C 0x02008032
++DATA 4 0x021B001C 0x00008033
++DATA 4 0x021B001C 0x00048031
++DATA 4 0x021B001C 0x15208030
++DATA 4 0x021B001C 0x04008040
++DATA 4 0x021B0020 0x00000800
++DATA 4 0x021B0818 0x00000227
++DATA 4 0x021B0004 0x0002552D
++DATA 4 0x021B0404 0x00011006
++DATA 4 0x021B001C 0x00000000
++
++#endif
+diff --git a/board/wirelessroad/mx6ull_wr_netsom/mx6ull_wr_netsom.c b/board/wirelessroad/mx6ull_wr_netsom/mx6ull_wr_netsom.c
+new file mode 100644
+index 0000000000..b9307fdfe9
+--- /dev/null
++++ b/board/wirelessroad/mx6ull_wr_netsom/mx6ull_wr_netsom.c
+@@ -0,0 +1,160 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2016 Freescale Semiconductor, Inc.
++ */
++
++#include <init.h>
++#include <asm/arch/clock.h>
++#include <asm/arch/crm_regs.h>
++#include <asm/arch/iomux.h>
++#include <asm/arch/mx6-pins.h>
++#include <asm/arch/sys_proto.h>
++#include <asm/mach-imx/iomux-v3.h>
++#include <asm/mach-imx/mxc_i2c.h>
++#include <fsl_esdhc_imx.h>
++#include <linux/bitops.h>
++#include <miiphy.h>
++#include <net.h>
++#include <netdev.h>
++#include <usb.h>
++#include <usb/ehci-ci.h>
++
++DECLARE_GLOBAL_DATA_PTR;
++
++int dram_init(void)
++{
++	gd->ram_size = imx_ddr_size();
++
++	return 0;
++}
++
++#define UART_PAD_CTRL  (PAD_CTL_PKE         | PAD_CTL_PUE       | \
++			PAD_CTL_PUS_100K_UP | PAD_CTL_SPEED_MED | \
++			PAD_CTL_DSE_40ohm   | PAD_CTL_SRE_FAST  | \
++			PAD_CTL_HYS)
++
++static iomux_v3_cfg_t const uart1_pads[] = {
++	MX6_PAD_UART1_TX_DATA__UART1_DCE_TX | MUX_PAD_CTRL(UART_PAD_CTRL),
++	MX6_PAD_UART1_RX_DATA__UART1_DCE_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
++};
++
++static void setup_iomux_uart(void)
++{
++	imx_iomux_v3_setup_multiple_pads(uart1_pads, ARRAY_SIZE(uart1_pads));
++}
++
++int board_mmc_get_env_dev(int devno)
++{
++	return devno;
++}
++
++int mmc_map_to_kernel_blk(int devno)
++{
++	return devno;
++}
++
++int board_early_init_f(void)
++{
++	setup_iomux_uart();
++
++	return 0;
++}
++
++#ifdef CONFIG_FEC_MXC
++static int setup_fec(void)
++{
++	struct iomuxc *const iomuxc_regs = (struct iomuxc *)IOMUXC_BASE_ADDR;
++	int ret;
++
++	/*
++	* Use 50MHz anatop loopback REF_CLK1 for ENET1,
++	* clear gpr1[13], set gpr1[17].
++	*/
++	clrsetbits_le32(&iomuxc_regs->gpr[1], IOMUX_GPR1_FEC1_MASK,
++			IOMUX_GPR1_FEC1_CLOCK_MUX1_SEL_MASK);
++	
++	/*
++	* Use 50MHz anatop loopbak REF_CLK2 for ENET2,
++	* clear gpr1[14], set gpr1[18].
++	*/
++	clrsetbits_le32(&iomuxc_regs->gpr[1], IOMUX_GPR1_FEC2_MASK,
++			IOMUX_GPR1_FEC2_CLOCK_MUX1_SEL_MASK);
++	
++	ret = enable_fec_anatop_clock(0, ENET_50MHZ);
++	if (ret)
++		return ret;
++	ret = enable_fec_anatop_clock(1, ENET_50MHZ);
++	if (ret)
++		return ret;
++
++	enable_enet_clk(1);
++
++	return 0;
++}
++
++int set_mac_from_chipid(void)
++{
++	char buf[18];
++	//unsigned int ID0 = *((volatile const unsigned int*)0x21BC410);
++	unsigned int ID1 = *((volatile const unsigned int*)0x21BC420);
++
++	sprintf(buf, "06:0a:36:%02x:%02x:%02x",
++		(unsigned char)(ID1 >> 16),
++		(unsigned char)(ID1 >> 8),
++		(unsigned char)(ID1 >> 0)
++	);
++	printf("MAC1: %s\n", buf);
++
++	env_set("ethaddr", buf);
++
++	sprintf(buf, "06:0a:46:%02x:%02x:%02x",
++		(unsigned char)(ID1 >> 16),
++		(unsigned char)(ID1 >> 8),
++		(unsigned char)(ID1 >> 0)
++	);
++	printf("MAC2: %s\n", buf);
++	env_set("eth1addr", buf);
++	return 0;
++}
++
++
++int board_phy_config(struct phy_device *phydev)
++{
++	phy_write(phydev, MDIO_DEVAD_NONE, 0x1f, 0x8190);
++
++	if (phydev->drv->config)
++		phydev->drv->config(phydev);
++
++	return 0;
++}
++#endif
++
++
++int board_late_init(void)
++{
++	set_mac_from_chipid();
++
++	return 0;
++}
++
++int board_init(void)
++{
++	/* Address of boot parameters */
++	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
++
++
++#ifdef	CONFIG_FEC_MXC
++	
++	setup_fec();
++#endif
++
++	return 0;
++}
++
++
++int checkboard(void)
++{
++	printf("Board: WirelessRoad NetSOM\n");
++
++	return 0;
++}
+\ No newline at end of file
+-- 
+2.41.0
+
