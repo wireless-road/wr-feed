@@ -33,7 +33,7 @@ endef
 
 define Package/canopenlinux/install
 	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/canopend $(1)/usr/sbin/canoprnd
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/canopend $(1)/usr/sbin/canopend
 endef
 
 $(eval $(call BuildPackage,canopenlinux))
