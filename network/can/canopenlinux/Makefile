@@ -13,10 +13,12 @@ PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/CANopenNode/CANopenLinux.git
 PKG_SOURCE_DATE:=2021-05-06
-PKG_SOURCE_VERSION:=87cfbac52bc67809be20ca03ef3533293e7f7c3a
-PKG_MIRROR_HASH:=4543b44f7a7466f4e94f6c40d23779040d8dacd01f14337fd5f2a8f995a6f54e
+PKG_SOURCE_VERSION:=ebcc3c8f01c9360c3a090267611e805bc78bd236
+PKG_MIRROR_HASH:=59816df6f080689a112cc124a1df2b66419fb0ab9f3d08a725e3f6752482eee8
 
 include $(INCLUDE_DIR)/package.mk
+RSTRIP:=:
+
 
 define Package/canopenlinux
 	SECTION:=WR CAN
@@ -30,10 +32,15 @@ define Package/canopenlinux/description
 	CANopenLinux is a CANopen stack running on Linux devices.
 endef
 
+define Build/Compile
+	CFLAGS="$(TARGET_CFLAGS)" $(MAKE) -C $(PKG_BUILD_DIR) $(TARGET_CONFIGURE_OPTS)
+	CFLAGS="$(TARGET_CFLAGS)" $(MAKE) -C $(PKG_BUILD_DIR)/cocomm $(TARGET_CONFIGURE_OPTS)
+endef
 
 define Package/canopenlinux/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/canopend $(1)/usr/sbin/canopend
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/cocomm/cocomm $(1)/usr/sbin/cocomm
 endef
 
 $(eval $(call BuildPackage,canopenlinux))
