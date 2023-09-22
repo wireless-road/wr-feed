@@ -1,0 +1,87 @@
+
+/{
+    clocks {
+		audio_clk: audio_clk {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <24000000>;
+		};
+	};
+
+	sound-wm8960 {
+		compatible = "fsl,imx-audio-wm8960";
+		model = "NetSOM-WM8960";
+		audio-cpu = <&sai2>;
+		audio-codec = <&wm8960>;
+		// audio-asrc = <&asrc>;
+		bitclock-master = <&wm8960>;
+		frame-master = <&wm8960>;
+		dai-format = "i2s";
+		
+		// audio-routing =
+		// 	"Headphone Jack", "HP_L",
+		// 	"Headphone Jack", "HP_R",
+		// 	"Ext Spk", "SPK_LP",
+		// 	"Ext Spk", "SPK_LN",
+		// 	"Ext Spk", "SPK_RP",
+		// 	"Ext Spk", "SPK_RN",
+		// 	"LINPUT2", "Mic Jack",
+		// 	"LINPUT3", "Mic Jack",
+		// 	"RINPUT1", "AMIC",
+		// 	"RINPUT2", "AMIC",
+		// 	"Mic Jack", "MICB",
+		// 	"AMIC", "MICB";
+	};
+    // sound {
+	// 	compatible = "simple-audio-card";
+	// 	simple-audio-card,name = "NetSOM-WM8960";
+	// 	// simple-audio-card,widgets =
+	// 	// 	"Microphone", "Mic Jack",
+	// 	// 	"Line", "Line In",
+	// 	// 	"Line", "Line Out",
+	// 	// 	"Speaker", "Speaker",
+	// 	// 	"Headphone", "Headphone Jack";
+	// 	// simple-audio-card,routing =
+	// 	// 	"Headphone Jack", "HP_L",
+	// 	// 	"Headphone Jack", "HP_R",
+	// 	// 	"Speaker", "SPK_LP",
+	// 	// 	"Speaker", "SPK_LN",
+	// 	// 	"Speaker", "SPK_RP",
+	// 	// 	"Speaker", "SPK_RN",
+	// 	// 	"LINPUT1", "Mic Jack",
+	// 	// 	"LINPUT2", "Mic Jack",
+	// 	// 	"RINPUT2", "Line In";
+        
+    //     simple-audio-card,dai-link@0 {
+    //         format = "i2s";
+	// 	    bitclock-master = <&wm8960_dai>;
+	// 	    frame-master = <&wm8960_dai>;
+  
+    //         sai2_dai: cpu {
+    //             sound-dai = <&sai2>;
+    //         };
+
+    //         wm8960_dai: codec {
+    //             sound-dai = <&wm8960>;
+	// 			system-clock-frequency = <12880000>;
+    //         };
+    //     };
+	// };
+};
+
+&sai2 {
+    status = "okay";
+};
+
+&i2c1{
+    status = "okay";
+
+    wm8960: codec@1a {
+		#sound-dai-cells = <0>;
+		compatible = "wlf,wm8960";
+		reg = <0x1a>;
+		wlf,shared-lrclk;
+		clocks = <&audio_clk>;
+		clock-names = "mclk";
+	};
+};

@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Device Tree Source for WirelessRoad Boards
+ */
+/ {
+    wfx_pwrseq: wfx_pwrseq {
+        compatible = "mmc-pwrseq-simple";
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_wfx_reset>;
+        reset-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
+    };
+};
+
+&iomuxc {
+    pinctrl_wfx_reset: wfx_reset_grp {
+        fsl,pins = <
+            /* W_RESET */
+            MX6UL_PAD_LCD_DATA14__GPIO3_IO19        0x1b0b0
+        >;
+    };
+
+    pinctrl_wfx_wakeup: wfx_wakeup_grp {
+        fsl,pins = <
+            /* W_UP */
+            MX6UL_PAD_LCD_DATA08__GPIO3_IO13        0x130b0
+        >;
+    };
+    pinctrl_wfx_irq: wfx_irq_grp {
+        fsl,pins = <
+            /* W_IRQ */
+            MX6UL_PAD_LCD_DATA06__GPIO3_IO11        0x1b0b0
+        >;
+    };
+};
+
+&usdhc2 {  /* Wifi SDIO */
+    mmc-pwrseq = <&wfx_pwrseq>;
+    status = "okay";
+    wfm200: wifi@1 {
+		compatible = "silabs,wf200";
+		reg = <1>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_wfx_wakeup &pinctrl_wfx_irq>;
+		wakeup-gpios = <&gpio3 13 GPIO_ACTIVE_HIGH>;
+        interrupts = <&gpio3 11 IRQ_TYPE_EDGE_RISING>;
+	};
+};

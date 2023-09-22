@@ -1,0 +1,55 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2023 WirelessRoad
+ */
+
+/dts-v1/;
+#include "wr-common.dtsi"
+#include "wr-wifi.dtsi"
+#include "wr-audio-wm8960.dtsi"
+
+/ {
+	model = "WirelessRoad NetSOM Evaluation board";
+	compatible = "wirelessroad,netsom-evb", "fsl,imx6ull";
+	chosen {
+		bootargs = "console=ttymxc0,115200 rootwait kgdboc=ttymxc0,115200";
+	};
+};
+
+&can1 {
+	status = "okay";
+};
+
+&can2 {
+	status= "okay";
+};
+
+&fec1 {
+	status = "okay";
+};
+
+&fec2 {
+	status = "okay";
+};
+
+&ethphy1 {
+	status = "okay";
+};
+
+&uart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart1>;
+	status = "okay";
+};
+
+&usbotg1 {
+	status = "okay";
+};
+
+&usbotg2 {
+	status = "okay";
+};
+
+&usdhc1 {
+	status = "okay";
+};
